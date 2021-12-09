@@ -28,16 +28,6 @@ class ClassificationHead(nn.Module):
         return x
 
 
-def reweight_z(z, attn):
-    '''
-    :param z: b x m x 3
-    :param attn: b x m
-    '''
-    z_w = z * attn.unsqueeze(-1).repeat(1, 1, z.size(-1)) + 1e-8
-    z_w = z_w / z_w.sum(dim=-1, keepdim=True)
-    return z_w
-
-
 def temperature_annealing(tau, step):
     if tau == 0.:
         tau = 10. if step % 5 == 0 else 1.
@@ -131,58 +121,6 @@ def build_pseudo_labels(labels, m_attn):
         
         pseudo_labels.append(pseudo_label)
     return torch.stack(pseudo_labels)
-
-
-def local_deduction_loss(local_logits, labels, m_attn):
-    '''
-    :param preds: b x m x 3
-    :param labels: (b,)
-    :param m_attn: b x m
-    :return: (,)
-    '''
-    mask = torch.gt(m_attn, 1e-16).to(torch.int)
-    loss = 0.
-    sup_label = torch.tensor(2).to(labels)
-    nei_label = torch.tensor(1).to(labels)
-
-    for idx, label in enumerate(labels):
-        mm = mask[idx].sum(0)
-        if label == 2:  # SUPPORTS
-            pred = local_logits[idx][:mm, :]
-            _loss = F.cross_entropy(pred, label.repeat(mm))
-            loss += _loss
-
-        elif label == 0:  # REFUTES
-            num_samples = magic_proportion(mm)
-            id = torch.topk(m_attn[idx], k=num_samples).indices
-            l = F.cross_entropy(local_logits[idx][id], label.repeat(num_samples))
-            ll = 0.
-            for i, p in enumerate(local_logits[idx][:mm, :]):
-                if i not in id:
-                    ll += torch.min(F.cross_entropy(p.unsqueeze(0), sup_label.unsqueeze(0)),
-                                    F.cross_entropy(p.unsqueeze(0), nei_label.unsqueeze(0)))
-            if num_samples >= mm:
-                _loss = l
-            else:
-                _loss = (ll / (mm - num_samples) + l) / 2
-            loss += _loss
-
-        elif label == 1:  # NEI
-            num_samples = magic_proportion(mm)
-            id = torch.topk(m_attn[idx], k=num_samples).indices
-            l = F.cross_entropy(local_logits[idx][id], label.repeat(num_samples))
-            ll = 0.
-            for i, p in enumerate(local_logits[idx][:mm, :]):
-                if i not in id:
-                    ll += F.cross_entropy(p.unsqueeze(0), sup_label.unsqueeze(0))
-            if num_samples >= mm:
-                _loss = l
-            else:
-                _loss = (ll / (mm - num_samples) + l) / 2
-            loss += _loss
-
-    loss /= labels.size(0)
-    return loss
 
 
 def magic_proportion(m, magic_n=5):

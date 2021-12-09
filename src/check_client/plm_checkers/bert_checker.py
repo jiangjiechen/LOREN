@@ -13,7 +13,7 @@ import torch.nn.functional as F
 
 from transformers import BertModel, BertPreTrainedModel
 from .checker_utils import attention_mask_to_mask, ClassificationHead, soft_logic, build_pseudo_labels, \
-    get_label_embeddings, temperature_annealing, reweight_z
+    get_label_embeddings, temperature_annealing
 
 
 class BertChecker(BertPreTrainedModel):
@@ -96,7 +96,6 @@ class BertChecker(BertPreTrainedModel):
             y_star_emb = get_label_embeddings(labels_onehot, self.classifier.out_proj.weight)  # b x h
             z = self.Q_phi(local_outputs, y_star_emb)
             z_softmax = z.softmax(-1)
-            # z_softmax = reweight_z(z_softmax, m_attn)   # DEBUG
 
             # ======================== P_theta ==============================
 
@@ -135,7 +134,6 @@ class BertChecker(BertPreTrainedModel):
             else:
                 z = torch.rand([local_outputs.size(0), local_outputs.size(1), self.num_labels]).to(local_outputs)
             z_softmax = z.softmax(-1)
-            # z_softmax = reweight_z(z_softmax, m_attn)   # DEBUG
 
             for i in range(3):  # N = 3
                 z = z_softmax.argmax(-1)
@@ -145,7 +143,6 @@ class BertChecker(BertPreTrainedModel):
                 y_emb = get_label_embeddings(y, self.classifier.out_proj.weight)
                 z = self.Q_phi(local_outputs, y_emb)
                 z_softmax = z.softmax(-1)
-                # z_softmax = reweight_z(z_softmax, m_attn)   # DEBUG
 
         return (loss, (neg_elbo, logic_loss), y, m_attn, (z_softmax, mask))  # batch first
 

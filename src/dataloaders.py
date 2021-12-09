@@ -14,10 +14,7 @@ import re
 import ujson as json
 from collections import defaultdict
 
-try:
-    pj_prefix = f'{os.environ["HDFSCJJ"]}/projects/FC-Logic'
-except:
-    pj_prefix = cjj.AbsParentDir(__file__, '..')
+pj_prefix = cjj.AbsParentDir(__file__, '..')
 
 
 class FEVERLoader:
