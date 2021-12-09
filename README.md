@@ -1,8 +1,8 @@
 # LOREN
 
-Resources for our AAAI 2022 paper (pre-print) LOREN: Logic-Regularized Reasoning for Interpretable Fact Verification.
+Resources for our AAAI 2022 paper (pre-print): "LOREN: Logic-Regularized Reasoning for Interpretable Fact Verification".
 
-![front](https://github.com/jiangjiechen/LOREN/docs/front.png)
+![front](https://github.com/jiangjiechen/LOREN/blob/main/docs/front.png)
 
 
 ## Dependencies
