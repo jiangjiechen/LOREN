@@ -10,6 +10,7 @@ from nltk.stem import WordNetLemmatizer
 from allennlp.predictors.predictor import Predictor
 
 nltk.download('wordnet')
+nltk.download('stopwords')
 
 
 def deal_bracket(text, restore, leading_ent=None):
@@ -112,19 +113,14 @@ def refine_results(tokens, spans, stopwords):
 
 
 class SentenceParser:
-    def __init__(self, device='cuda:0'):
+    def __init__(self, device='cuda:0',
+                 ner_path="https://storage.googleapis.com/allennlp-public-models/ner-model-2020.02.10.tar.gz",
+                 cp_path="https://storage.googleapis.com/allennlp-public-models/elmo-constituency-parser-2020.02.10.tar.gz"):
         self.device = self.parse_device(device)
-        self.ner = Predictor.from_path(
-            "https://storage.googleapis.com/allennlp-public-models/ner-model-2020.02.10.tar.gz",
-            cuda_device=self.device
-        )
+        self.ner = Predictor.from_path(ner_path, cuda_device=self.device)
         print('* ner loaded')
-        self.cp = Predictor.from_path(
-            "https://storage.googleapis.com/allennlp-public-models/elmo-constituency-parser-2020.02.10.tar.gz",
-            cuda_device=self.device
-        )
+        self.cp = Predictor.from_path(cp_path, cuda_device=self.device)
         print('* constituency parser loaded')
-        nltk.download('stopwords')
         self.lemmatizer = WordNetLemmatizer()
 
         # some heuristic rules can be added here

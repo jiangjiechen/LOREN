@@ -1,13 +1,15 @@
 # LOREN
 
-Resources for our AAAI 2022 paper (pre-print): "LOREN: Logic-Regularized Reasoning for Interpretable Fact Verification".
+Resources for our AAAI 2022 paper (pre-print): "[LOREN: Logic-Regularized Reasoning for Interpretable Fact Verification](https://arxiv.org/abs/2012.13577)".
 
 ![front](https://github.com/jiangjiechen/LOREN/blob/main/docs/front.png)
 
 
 ## Dependencies
 
+  
 - Prepare requirements: `pip3 install -r requirements.txt`.
+  - Also works for `allennlp==2.3.0, transformers==4.5.1, torch==1.8.1`.
 - *Set environment variable* `$PJ_HOME`: `export PJ_HOME=/YOUR_PATH/LOREN/`.
 
 ## Download Pre-processed Data and Checkpoints
@@ -98,3 +100,13 @@ This part is rather easy (less pipelined :P). A good place to start if you want 
 
 If you find our paper or resources useful to your research, please kindly cite our paper (pre-print, official published paper coming soon).
 
+```latex
+@misc{chen2021loren,
+      title={LOREN: Logic-Regularized Reasoning for Interpretable Fact Verification}, 
+      author={Jiangjie Chen and Qiaoben Bao and Changzhi Sun and Xinbo Zhang and Jiaze Chen and Hao Zhou and Yanghua Xiao and Lei Li},
+      year={2021},
+      eprint={2012.13577},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+```

@@ -158,7 +158,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--overwrite', action='store_true')
     parser.add_argument('--batch_size', '-b', type=int, default=64)
-    parser.add_argument('--evi_key', '-e', type=str, choices=['bert_evidence'], required=True)
+    parser.add_argument('--evi_key', '-e', type=str, default='bert_evidence')
     parser.add_argument('--version', '-v', type=str, help='v1, v2, ...', default='v5')
     parser.add_argument('--roles', nargs='+', required=True,
                         help='train val test eval')

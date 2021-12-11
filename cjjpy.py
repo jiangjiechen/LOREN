@@ -98,20 +98,6 @@ def init_logger(log_file=None, log_file_level=logging.NOTSET, from_scratch=False
     return logger
 
 
-def ShowDiff(file1, file2, html=True):
-    import difflib
-    d = difflib.HtmlDiff()
-    try:
-        text1 = open(file1).readlines()
-        text2 = open(file2).readlines()
-    except:
-        text1 = file1
-        text2 = file2
-    diff = d.make_file(text1, text2)
-    with open('/Users/MichaelChen/Downloads/diff.html', 'w') as f:
-        f.write(diff)
-
-
 def OverWriteCjjPy(root='.'):
     # import difflib
     # diff = difflib.HtmlDiff()
@@ -212,20 +198,6 @@ def SortDict(_dict, reverse=True):
     return sorted(_dict.items(), key=lambda d: d[1], reverse=reverse)
 
 
-def MaxCommLen(str1, str2):
-    lstr1 = len(str1)
-    lstr2 = len(str2)
-    record = [[0 for i in range(lstr2 + 1)] for j in range(lstr1 + 1)]
-    max_num = 0
-    for i in range(lstr1):
-        for j in range(lstr2):
-            if str1[i] == str2[j]:
-                record[i + 1][j + 1] = record[i][j] + 1
-                if record[i + 1][j + 1] > max_num:
-                    max_num = record[i + 1][j + 1]
-    return max_num, ''
-
-
 def lark(content='test'):
     print(content)
 
@@ -262,12 +234,6 @@ if __name__ == '__main__':
     if args.overwrite:
         print('* Overwriting cjjpy...')
         OverWriteCjjPy()
-
-    if args.diff:
-        file1 = args.diff[0]
-        file2 = args.diff[1]
-        print('* Finding difference between %s and %s...' % (file1, file2))
-        ShowDiff(file1, file2)
 
     if args.lark:
         try:
