@@ -40,7 +40,6 @@ except:
     from utils import read_json_lines, compute_metrics
     from train import do_evaluate, set_seed
 
-
 MODEL_MAPPING = {
     'bert': (BertConfig, BertTokenizer, BertChecker),
     'roberta': (RobertaConfig, RobertaTokenizer, RobertaChecker),
@@ -103,7 +102,7 @@ class FactChecker:
             iter = tqdm(dataloader, desc="Fact Checking") if verbose else dataloader
             _, y_predicted, z_predicted, m_attn, mask = \
                 do_evaluate(iter, self.model, self.args, during_training=False, with_label=False)
-            
+
         return y_predicted, z_predicted, m_attn, mask
 
     def check_from_file(self, in_filename, out_filename, batch_size, verbose=False):
@@ -119,8 +118,6 @@ class FactChecker:
         m_attn = repeat(None) if m_attn is None else m_attn
         ordered_results = {}
         with_label = inputs[0].get('label') is not None
-        culpa_m_attn = 0
-        culpa_prob = 0
 
         if with_label:
             label_truth = [label2id[x['label']] for x in inputs]
@@ -137,27 +134,11 @@ class FactChecker:
                 if i < 5:
                     print("{}\t{}\t{}".format(inp.get("id", i), inp["claim"], y))
                 if z is not None and attn is not None:
-
-                    if inp.get('culprit'):
-                        # TODO: use direct results of z, not attention!!!
-                        top_m_attn = np.argmax(attn)
-                        if top_m_attn in inp['culprit']:
-                            culpa_m_attn += 1
-                        for i, p in enumerate(z):
-                            if id2label[np.argmax(p)] == inp['label']:
-                                culpa_prob += 1
-                                break
-
                     result.update({
                         'z_prob': z[:torch.tensor(_mask).sum()],
                         'm_attn': attn[:torch.tensor(_mask).sum()],
                     })
             ordered_results[inp['id']] = result
-        
-        if culpa_m_attn > 0:
-            # TODO: better culpa
-            print(f"* CulpA m_attn: {100 * culpa_m_attn / len(inputs)}")
-            print(f"* CulpA prob: {100 * culpa_prob / len(inputs)}")
 
         with tf.io.gfile.GFile(out_filename, 'w') as fout:
             if raw_inp:
@@ -184,11 +165,11 @@ class FactChecker:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input', '-i', required=True, type=str, 
+    parser.add_argument('--input', '-i', required=True, type=str,
                         choices=['val', 'eval', 'test', 'demo'])
     parser.add_argument('--output', '-o', default='none', type=str)
     parser.add_argument('--ckpt', '-c', required=True, type=str)
-    parser.add_argument('--model_type', default='roberta', type=str, 
+    parser.add_argument('--model_type', default='roberta', type=str,
                         choices=['roberta', 'bert'])
     parser.add_argument('--model_name_or_path', default='roberta-large', type=str)
     parser.add_argument('--verbose', '-v', action='store_true', default=False,
@@ -222,7 +203,7 @@ if __name__ == '__main__':
         f"{args.output} must end with predictions.jsonl"
 
     args.input = f'{os.environ["PJ_HOME"]}/data/fact_checking/v5/{args.input}.json'
-    
+
     checker = FactChecker(args, args.ckpt, args.mask_rate)
     fever_results = checker.check_from_file(args.input, args.output, args.batch_size, args.verbose)
     cjj.lark(f"{args.output}: {fever_results}")

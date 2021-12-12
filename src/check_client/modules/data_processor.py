@@ -18,6 +18,7 @@ from torch.utils.data import TensorDataset
 import tensorflow as tf
 import cjjpy as cjj
 import sys
+
 try:
     from ...mrc_client.answer_generator import assemble_answers_to_one
 except:
@@ -127,11 +128,11 @@ def _create_input_ids_from_token_ids(token_ids_a, token_ids_b, tokenizer, max_se
 
 
 def convert_examples_to_features(
-    examples,
-    tokenizer,
-    max_seq1_length=256,
-    max_seq2_length=128,
-    verbose=True
+        examples,
+        tokenizer,
+        max_seq1_length=256,
+        max_seq2_length=128,
+        verbose=True
 ):
     features = []
     iter = tqdm(examples, desc="Converting Examples") if verbose else examples
@@ -167,7 +168,7 @@ def convert_examples_to_features(
         encoded_outputs["c_token_type_ids"] = token_type_ids
 
         # ****** for sequence 2 ******* #
-        encoded_outputs["q_input_ids_list"] = [] # m x L
+        encoded_outputs["q_input_ids_list"] = []  # m x L
         encoded_outputs["q_attention_mask_list"] = []
         encoded_outputs["q_token_type_ids_list"] = []
 
@@ -332,12 +333,12 @@ class DataProcessor:
         evidential = assemble_answers_to_one(line, self.k, mask_rate=self.mask_rate)['evidential_assembled']
         label = line.get("label", None)
         nli_labels = line.get('nli_labels', [[0., 0., 0.]] * len(questions))
-        
+
         for i, e in enumerate(evidential):
             if '<mask>' in e:
                 nli_labels[i] = [0., 0., 0.]
 
-        answers = [v[0] for v in answers] # k = 1
+        answers = [v[0] for v in answers]  # k = 1
         label = self.label2id.get(label)
 
         sample = {
@@ -346,7 +347,7 @@ class DataProcessor:
             "evidences": evidences,
             "questions": questions,
             "answers": answers,
-            "evidential": evidential,
+            "evidential": evidential,  # already assembled.
             "label": label,
             'nli_labels': nli_labels
         }
