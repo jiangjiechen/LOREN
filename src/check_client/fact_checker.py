@@ -28,8 +28,8 @@ from transformers import (
 try:
     from .modules.data_processor import DataProcessor
     from .plm_checkers import BertChecker, RobertaChecker
-    from .utils import read_json_lines, compute_metrics
-    from .train import do_evaluate, set_seed
+    from .utils import read_json_lines, compute_metrics, set_seed
+    from .train import do_evaluate
     from ..eval_client.fever_scorer import FeverScorer
 except:
     sys.path.append(cjj.AbsParentDir(__file__, '.'))
@@ -37,8 +37,8 @@ except:
     from eval_client.fever_scorer import FeverScorer
     from modules.data_processor import DataProcessor
     from plm_checkers import BertChecker, RobertaChecker
-    from utils import read_json_lines, compute_metrics
-    from train import do_evaluate, set_seed
+    from utils import read_json_lines, compute_metrics, set_seed
+    from train import do_evaluate
 
 MODEL_MAPPING = {
     'bert': (BertConfig, BertTokenizer, BertChecker),
@@ -51,16 +51,17 @@ id2label = {v: k for k, v in label2id.items()}
 
 
 class FactChecker:
-    def __init__(self, args, ckpt_dir, mask_rate=0.):
+    def __init__(self, args, fc_ckpt_dir=None, mask_rate=0.):
         self.data_processor = None
         self.tokenizer = None
         self.model = None
-        self.ckpt = ckpt_dir
         self.args = args
+        self.args.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.ckpt = args.fc_dir if fc_ckpt_dir is None else fc_ckpt_dir
         self.mask_rate = mask_rate
 
         logger.info('Initializing fact checker.')
-        self._prepare_ckpt(self.args.model_name_or_path, ckpt_dir)
+        self._prepare_ckpt(self.args.model_name_or_path, self.ckpt)
         self.load_model()
 
     def _prepare_ckpt(self, model_name_or_path, ckpt_dir):
@@ -191,8 +192,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     set_seed(args)
-
-    args.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     if args.output == 'none':
         args.ckpt = args.ckpt[:-1] if args.ckpt.endswith('/') else args.ckpt

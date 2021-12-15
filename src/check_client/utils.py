@@ -9,10 +9,19 @@
 """
 
 import logging
-from numpy.core.fromnumeric import argmax
+import random
+import numpy as np
 import ujson as json
 import torch
-from plm_checkers.checker_utils import soft_logic
+from .plm_checkers.checker_utils import soft_logic
+
+
+def set_seed(args):
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+    torch.manual_seed(args.seed)
+    if args.n_gpu > 0:
+        torch.cuda.manual_seed_all(args.seed)
 
 
 def init_logger(level, filename=None, mode='a', encoding='utf-8'):
@@ -100,7 +109,7 @@ def compute_metrics(truth, predicted, z_predicted, mask):
         res = {'label': x, 'prediction': y}
         if x == y:
             cnt += 1
-        
+
         res['pred_z'] = z
 
         y_ = soft_logic(torch.tensor([z]), torch.tensor([m]))[0]
@@ -108,13 +117,13 @@ def compute_metrics(truth, predicted, z_predicted, mask):
             z_cnt_s += 1
         if y_.argmax(-1).item() == y:
             agree_s += 1
-        
-        z_h = torch.tensor(z[:torch.tensor(m).sum()]).argmax(-1).tolist() # m' x 3
-        if 0 in z_h:    # REFUTES
+
+        z_h = torch.tensor(z[:torch.tensor(m).sum()]).argmax(-1).tolist()  # m' x 3
+        if 0 in z_h:  # REFUTES
             y__ = 0
         elif 1 in z_h:  # NEI
             y__ = 1
-        else:           # SUPPPORTS
+        else:  # SUPPPORTS
             y__ = 2
         if y__ == x:
             z_cnt_h += 1

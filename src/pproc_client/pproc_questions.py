@@ -3,7 +3,7 @@
 '''
 @Author     : Jiangjie Chen
 @Time       : 2020/7/25 18:23
-@Contact    : mi0134sher@hotmail.com
+@Contact    : jjchen19@fudan.edu.cn
 @Description:
 '''
 

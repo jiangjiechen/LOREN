@@ -222,3 +222,4 @@ output/
 lightning_logs/
 wandb/
 .lock
+*gradio*

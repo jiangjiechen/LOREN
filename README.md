@@ -5,9 +5,14 @@ Resources for our AAAI 2022 paper (pre-print): "[LOREN: Logic-Regularized Reason
 ![front](https://github.com/jiangjiechen/LOREN/blob/main/docs/front.png)
 
 
+## DEMO System
+
+Check out our demo system at [Spaces](https://huggingface.co/spaces/Jiangjie/loren-fact-checking)! 
+Note that the results will be slightly different from the paper, since we use an up-to-date Wikipedia as the evidence source whereas [FEVER](https://fever.ai) uses Wikipedia dated 2017.
+
 ## Dependencies
 
-  
+- CUDA > 11
 - Prepare requirements: `pip3 install -r requirements.txt`.
   - Also works for `allennlp==2.3.0, transformers==4.5.1, torch==1.8.1`.
 - *Set environment variable* `$PJ_HOME`: `export PJ_HOME=/YOUR_PATH/LOREN/`.
@@ -21,9 +26,10 @@ Resources for our AAAI 2022 paper (pre-print): "[LOREN: Logic-Regularized Reason
   - Evidence retrieval models are not required for training LOREN, since we directly adopt the retrieved evidence from [KGAT](https://github.com/thunlp/KernelGAT), which is at `data/fever/baked_data/` (using only during pre-processing).
   - Original data is at `data/fever/` (using only during pre-processing). 
 
-- **Pre-trained checkpoints** at [Google Drive](https://drive.google.com/file/d/1hl17cCdy4rMNQDdrQ0eHsY6syYjT_zvs/view?usp=sharing). Unzip it and put them under `LOREN/models/`.
+- **Pre-trained checkpoints** at [Huggingface Models](https://huggingface.co/Jiangjie/loren). Unzip it and put them under `LOREN/models/`.
   - Checkpoints for veracity prediciton are at `models/fact_checking/`.
-  - Checkpoint for generative MRC is at `models/mrc_seq2seq_v5/best_tfmr/`.
+  - Checkpoint for generative MRC is at `models/mrc_seq2seq/`.
+  - Checkpoints for KGAT evidence retrieval models are at `models/evidence_retrieval/` (not used in training, displayed only for the sake of completeness).
 
 ## Training LOREN from Scratch
 
@@ -55,12 +61,12 @@ First, go to `LOREN/src/`.
 
 - Go to `mrc_client/seq2seq/`, which is modified based on HuggingFace's examples.
 - Follow `script/train.sh`.
-- The best checkpoint will be saved in `models/mrc_seq2seq_v5/best_tfmr/`.
+- The best checkpoint will be saved in `$output_dir` (e.g., `models/mrc_seq2seq/`).
   - Best checkpoints are decided by ROUGE score on dev set.
 
 #### 3) Run MRC for all questions and assemble local premises
 
-- Run `python3 pproc_client/pproc_evidential.py --roles val train eval test -m models/mrc_seq2seq_v5/best_tfmr`.
+- Run `python3 pproc_client/pproc_evidential.py --roles val train eval test -m PATH_TO_MRC_MODEL/`.
 - This generates files:
   - `{role}.json`: files for veracity prediction. Assembled local premises are stored in the field `evidential_assembled`.
 

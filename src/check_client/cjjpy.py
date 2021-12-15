@@ -2,8 +2,8 @@
 
 '''
 @Author : Jiangjie Chen
-@Time   : 2018/11/15 下午5:08
-@Contact: mi0134sher@hotmail.com
+@Time   : 2018/11/15 17:08
+@Contact: jjchen19@fudan.edu.cn
 '''
 
 import re

@@ -6,6 +6,7 @@
 
 import re
 import nltk
+import torch.cuda
 from nltk.stem import WordNetLemmatizer
 from allennlp.predictors.predictor import Predictor
 
@@ -113,7 +114,7 @@ def refine_results(tokens, spans, stopwords):
 
 
 class SentenceParser:
-    def __init__(self, device='cuda:0',
+    def __init__(self, device='cuda' if torch.cuda.is_available() else 'cpu',
                  ner_path="https://storage.googleapis.com/allennlp-public-models/ner-model-2020.02.10.tar.gz",
                  cp_path="https://storage.googleapis.com/allennlp-public-models/elmo-constituency-parser-2020.02.10.tar.gz"):
         self.device = self.parse_device(device)

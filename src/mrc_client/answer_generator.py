@@ -3,7 +3,7 @@
 '''
 @Author     : Jiangjie Chen
 @Time       : 2020/8/12 14:44
-@Contact    : mi0134sher@hotmail.com
+@Contact    : jjchen19@fudan.edu.cn
 @Description: 
 '''
 
@@ -52,7 +52,8 @@ def assemble_answers_to_one(js, k=5, mask_token='<mask>', mask_rate=0.):
         js = json.loads(js)
 
     should_keep = random.random() > mask_rate
-    js.pop('evidential_assembled')
+    if 'evidential_assembled' in js:
+        js.pop('evidential_assembled')
     for q, answers in zip(js['cloze_qs'], js['evidential']):
         if mask_token in q:
             s = q.find(mask_token)

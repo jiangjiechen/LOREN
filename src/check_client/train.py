@@ -34,12 +34,12 @@ from pytorch_lightning.loggers import WandbLogger
 
 try:
     from .modules.data_processor import DataProcessor
-    from .plm_checkers import BertChecker, RobertaChecker, XLNetChecker, DebertaChecker
-    from .utils import init_logger, compute_metrics
+    from .plm_checkers import BertChecker, RobertaChecker
+    from .utils import init_logger, compute_metrics, set_seed
 except:
     from modules.data_processor import DataProcessor
-    from plm_checkers import BertChecker, RobertaChecker, XLNetChecker, DebertaChecker
-    from utils import init_logger, compute_metrics
+    from plm_checkers import BertChecker, RobertaChecker
+    from utils import init_logger, compute_metrics, set_seed
 
 try:
     from torch.utils.tensorboard import SummaryWriter
@@ -49,19 +49,9 @@ except ImportError:
 mAutoModel = {
     'bert': BertChecker,
     'roberta': RobertaChecker,
-    'xlnet': XLNetChecker,
-    'deberta': DebertaChecker,
 }
 
 logger = logging.getLogger(__name__)
-
-
-def set_seed(args):
-    random.seed(args.seed)
-    np.random.seed(args.seed)
-    torch.manual_seed(args.seed)
-    if args.n_gpu > 0:
-        torch.cuda.manual_seed_all(args.seed)
 
 
 def train(args, data_processor, model, tokenizer):
