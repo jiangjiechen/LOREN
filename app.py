@@ -22,15 +22,15 @@ config = {
     "prior": "random",
     "mask_rate": 0.0,
     "cand_k": 3,
-    "max_seq2_length": 256,
-    "max_seq1_length": 128,
+    "max_seq1_length": 256,
+    "max_seq2_length": 128,
     "max_num_questions": 8,
     "do_lower_case": False
 }
 
 model_dir = snapshot_download('Jiangjie/loren')
-os.makedirs('data/', exist_ok=True)
-os.system('wget -O data/fever.db https://s3-eu-west-1.amazonaws.com/fever.public/wiki_index/fever.db')
+# os.makedirs('data/', exist_ok=True)
+# os.system('wget -O data/fever.db https://s3-eu-west-1.amazonaws.com/fever.public/wiki_index/fever.db')
 
 config['fc_dir'] = os.path.join(model_dir, 'fact_checking/roberta-large/')
 config['mrc_dir'] = os.path.join(model_dir, 'mrc_seq2seq/bart-base/')
