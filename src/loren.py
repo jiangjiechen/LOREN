@@ -58,7 +58,7 @@ class Loren:
 
         # Update js
         js = assemble_answers_to_one(js, k=self.args.cand_k)
-        js['evidence'] = [self.fc_client.tokenizer.clean_up_tokenization(e[2]) for e in js['evidence']]
+        js['evidence'] = [self.fc_client.tokenizer.clean_up_tokenization(e) for e in js['evidence']]
         js['questions'] = [self.fc_client.tokenizer.clean_up_tokenization(q) for q in js['questions']]
         js['claim_phrases'] = [self.fc_client.tokenizer.clean_up_tokenization(a[0]) for a in js['answers']]
         js['local_premises'] = [self.fc_client.tokenizer.clean_up_tokenization(a) for a in js['evidential_assembled']]
@@ -141,11 +141,11 @@ class Loren:
         '''
         if evidence in [None, '', 'null', 'NULL', 'Null']:
             evidence = self.er_client.retrieve(claim)
-            evidence = [(ev[0], ev[1], deal_bracket(ev[2], True, ev[0])) for ev in evidence]
+            evidence = [deal_bracket(ev[2], True, ev[0]) for ev in evidence]
         else:
             if isinstance(evidence, str):
-                # TODO: magic sentence number
-                evidence = [("None", i, ev.strip()) for i, ev in enumerate(evidence.split('||')[:5])]
+                # TODO: magic sentence number (5)
+                evidence = [ev.strip() for i, ev in enumerate(evidence.split('||')[:5])]
         return evidence
 
 

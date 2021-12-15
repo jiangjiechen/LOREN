@@ -13,7 +13,10 @@ import random
 import numpy as np
 import ujson as json
 import torch
-from .plm_checkers.checker_utils import soft_logic
+try:
+    from .plm_checkers.checker_utils import soft_logic
+except:
+    from plm_checkers.checker_utils import soft_logic
 
 
 def set_seed(args):

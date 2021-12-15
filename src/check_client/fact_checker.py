@@ -12,7 +12,6 @@ import os
 import sys
 import logging
 import torch
-import numpy as np
 from tqdm import tqdm
 import tensorflow as tf
 import ujson as json
@@ -59,7 +58,7 @@ class FactChecker:
         self.args.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.ckpt = args.fc_dir if fc_ckpt_dir is None else fc_ckpt_dir
         self.mask_rate = mask_rate
-
+        set_seed(args)
         logger.info('Initializing fact checker.')
         self._prepare_ckpt(self.args.model_name_or_path, self.ckpt)
         self.load_model()
@@ -90,7 +89,8 @@ class FactChecker:
                 logic_lambda=self.args.logic_lambda,
                 prior=self.args.prior,
             )
-            self.model = torch.nn.DataParallel(self.model)
+            if self.args.n_gpu > 0:
+                self.model = torch.nn.DataParallel(self.model)
 
     def _check(self, inputs: list, batch_size=32, verbose=True):
         dataset = self.data_processor.convert_inputs_to_dataset(inputs, self.tokenizer, verbose=verbose)
@@ -190,8 +190,6 @@ if __name__ == '__main__':
     parser.add_argument('--n_gpu', default=4)
 
     args = parser.parse_args()
-
-    set_seed(args)
 
     if args.output == 'none':
         args.ckpt = args.ckpt[:-1] if args.ckpt.endswith('/') else args.ckpt
