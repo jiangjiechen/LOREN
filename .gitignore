@@ -223,3 +223,4 @@ lightning_logs/
 wandb/
 .lock
 *gradio*
+kg_client/

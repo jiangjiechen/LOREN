@@ -74,11 +74,13 @@ class Loren:
         '''
         :param evidence: 'aaa||bbb||ccc' / [entity, num, evidence, (prob)] if not None
         '''
-        evidence = self._prep_evidence(claim, evidence)
+        evidence_tuples = self._prep_evidence(claim, evidence)
+        evidence = [x[2] for x in evidence_tuples]
+        entity = [x[0] for x in evidence_tuples]
         self.logger.info('  * Evidence prepared. *')
         assert isinstance(evidence, list)
 
-        js = {'claim': claim, 'evidence': evidence}
+        js = {'claim': claim, 'evidence': evidence, 'entities': entity}
         js = self._prep_claim_phrases(js)
         self.logger.info('  * Claim phrases prepared. *')
         js = self._prep_questions(js)
@@ -122,7 +124,7 @@ class Loren:
     def _prep_evidential_phrases(self, js):
         examples = []
         for q in js['questions']:
-            ex = self.ag_client.assemble(q, " ".join([x[2] for x in js['evidence']]))
+            ex = self.ag_client.assemble(q, " ".join(js['evidence']))
             examples.append(ex)
         predicted = self.ag_client.generate(examples, num_beams=self.args['cand_k'],
                                             num_return_sequences=self.args['cand_k'],
@@ -141,11 +143,11 @@ class Loren:
         '''
         if evidence in [None, '', 'null', 'NULL', 'Null']:
             evidence = self.er_client.retrieve(claim)
-            evidence = [deal_bracket(ev[2], True, ev[0]) for ev in evidence]
+            evidence = [(ev[0], ev[1], deal_bracket(ev[2], True, ev[0])) for ev in evidence]
         else:
             if isinstance(evidence, str):
                 # TODO: magic sentence number (5)
-                evidence = [ev.strip() for i, ev in enumerate(evidence.split('||')[:5])]
+                evidence = [(None, None, ev.strip()) for i, ev in enumerate(evidence.split('||')[:5])]
         return evidence
 
 
