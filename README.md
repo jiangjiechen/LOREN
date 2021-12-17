@@ -7,7 +7,7 @@ Resources for our AAAI 2022 paper (pre-print): "[LOREN: Logic-Regularized Reason
 
 ## DEMO System
 
-Check out our demo system at [Spaces](https://huggingface.co/spaces/Jiangjie/loren-fact-checking)! 
+Check out our [demo system](https://huggingface.co/spaces/Jiangjie/loren-fact-checking)! 
 Note that the results will be slightly different from the paper, since we use an up-to-date Wikipedia as the evidence source whereas [FEVER](https://fever.ai) uses Wikipedia dated 2017.
 
 ## Dependencies
