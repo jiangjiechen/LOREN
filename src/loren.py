@@ -97,7 +97,7 @@ class Loren:
         verbs = results['verbs']
         adjs = results['adjs']
         js['answers'] = NPs + verbs + adjs
-        js['answer_roles'] = ['noun'] * len(NPs) + ['verb'] * len(verbs) + ['adj'] * len(adjs)}
+        js['answer_roles'] = ['noun'] * len(NPs) + ['verb'] * len(verbs) + ['adj'] * len(adjs)
         if len(js['answers']) == 0:
             js['answers'] = js['claim'].split()[0]
             js['answer_roles'] = ['noun']
