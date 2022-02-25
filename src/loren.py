@@ -93,9 +93,10 @@ class Loren:
         results = self.sent_client.identify_NPs(deal_bracket(js['claim'], True),
                                                 candidate_NPs=[x[0] for x in js['evidence']])
         NPs = results['NPs']
-        claim = results['text']
+        claim_tokenized = results['text']
         verbs = results['verbs']
         adjs = results['adjs']
+        js['claim_tokenized'] = claim_tokenized
         js['answers'] = NPs + verbs + adjs
         js['answer_roles'] = ['noun'] * len(NPs) + ['verb'] * len(verbs) + ['adj'] * len(adjs)
         if len(js['answers']) == 0:
@@ -106,7 +107,7 @@ class Loren:
     def _prep_questions(self, js):
         _cache = []
         for answer in js['answers']:
-            _cache.append((js['claim'], [answer]))
+            _cache.append((js['claim_tokenized'], [answer]))
         qa_pairs = self.qg_client.generate([(x, y) for x, y in _cache])
         for q, clz_q, a in qa_pairs:
             if 'questions' in js:
