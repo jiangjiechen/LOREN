@@ -1,6 +1,6 @@
 # LOREN
 
-Resources for our AAAI 2022 paper (pre-print): "[LOREN: Logic-Regularized Reasoning for Interpretable Fact Verification](https://ojs.aaai.org/index.php/AAAI/article/view/21291)".
+Resources for our AAAI 2022 paper: "[LOREN: Logic-Regularized Reasoning for Interpretable Fact Verification](https://ojs.aaai.org/index.php/AAAI/article/view/21291)".
 
 ![front](https://github.com/jiangjiechen/LOREN/blob/main/docs/front.png)
 
@@ -104,7 +104,7 @@ This part is rather easy (less pipelined :P). A good place to start if you want 
 
 ## Citation
 
-If you find our paper or resources useful to your research, please kindly cite our paper (pre-print, official published paper coming soon).
+If you find our paper or resources useful to your research, please kindly cite our paper.
 
 ```latex
 @article{Chen_Bao_Sun_Zhang_Chen_Zhou_Xiao_Li_2022, 
