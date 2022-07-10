@@ -1,6 +1,6 @@
 # LOREN
 
-Resources for our AAAI 2022 paper (pre-print): "[LOREN: Logic-Regularized Reasoning for Interpretable Fact Verification](https://arxiv.org/abs/2012.13577)".
+Resources for our AAAI 2022 paper (pre-print): "[LOREN: Logic-Regularized Reasoning for Interpretable Fact Verification](https://ojs.aaai.org/index.php/AAAI/article/view/21291)".
 
 ![front](https://github.com/jiangjiechen/LOREN/blob/main/docs/front.png)
 
@@ -107,12 +107,16 @@ This part is rather easy (less pipelined :P). A good place to start if you want 
 If you find our paper or resources useful to your research, please kindly cite our paper (pre-print, official published paper coming soon).
 
 ```latex
-@misc{chen2021loren,
-      title={LOREN: Logic-Regularized Reasoning for Interpretable Fact Verification}, 
-      author={Jiangjie Chen and Qiaoben Bao and Changzhi Sun and Xinbo Zhang and Jiaze Chen and Hao Zhou and Yanghua Xiao and Lei Li},
-      year={2021},
-      eprint={2012.13577},
-      archivePrefix={arXiv},
-      primaryClass={cs.CL}
+@article{Chen_Bao_Sun_Zhang_Chen_Zhou_Xiao_Li_2022, 
+  title={LOREN: Logic-Regularized Reasoning for Interpretable Fact Verification}, 
+  volume={36}, 
+  url={https://ojs.aaai.org/index.php/AAAI/article/view/21291}, DOI={10.1609/aaai.v36i10.21291}, 
+  abstractNote={Given a natural language statement, how to verify its veracity against a large-scale textual knowledge source like Wikipedia? Most existing neural models make predictions without giving clues about which part of a false claim goes wrong. In this paper, we propose LOREN, an approach for interpretable fact verification. We decompose the verification of the whole claim at phrase-level, where the veracity of the phrases serves as explanations and can be aggregated into the final verdict according to logical rules. The key insight of LOREN is to represent claim phrase veracity as three-valued latent variables, which are regularized by aggregation logical rules. The final claim verification is based on all latent variables. Thus, LOREN enjoys the additional benefit of interpretability --- it is easy to explain how it reaches certain results with claim phrase veracity. Experiments on a public fact verification benchmark show that LOREN is competitive against previous approaches while enjoying the merit of faithful and accurate interpretability. The resources of LOREN are available at: https://github.com/jiangjiechen/LOREN.}, 
+  number={10}, 
+  journal={Proceedings of the AAAI Conference on Artificial Intelligence}, 
+  author={Chen, Jiangjie and Bao, Qiaoben and Sun, Changzhi and Zhang, Xinbo and Chen, Jiaze and Zhou, Hao and Xiao, Yanghua and Li, Lei}, 
+  year={2022}, 
+  month={Jun.}, 
+  pages={10482-10491} 
 }
 ```
