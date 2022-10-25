@@ -1,13 +1,5 @@
 # -*- coding: utf-8 -*-
 
-"""
-@Author             : Bao
-@Date               : 2020/8/12
-@Desc               :
-@Last modified by   : Bao
-@Last modified date : 2020/8/20
-"""
-
 import os
 import sys
 import logging
@@ -175,7 +167,7 @@ if __name__ == '__main__':
     parser.add_argument('--model_name_or_path', default='roberta-large', type=str)
     parser.add_argument('--verbose', '-v', action='store_true', default=False,
                         help='whether output phrasal veracity or not')
-    parser.add_argument('--logic_lambda', '-l', required=True, type=float)
+    parser.add_argument('--logic_lambda', '-l', default=0.5, type=float)
     parser.add_argument('--prior', default='random', type=str, choices=['nli', 'uniform', 'logic', 'random'],
                         help='type of prior distribution')
     parser.add_argument('--mask_rate', '-m', default=0., type=float)
