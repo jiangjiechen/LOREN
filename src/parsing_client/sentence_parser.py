@@ -27,6 +27,7 @@ def deal_bracket(text, restore, leading_ent=None):
 def refine_entity(entity):
     entity = re.sub(r'-LRB- .+ -RRB-$', '', entity)
     entity = re.sub(r'LRB .+ RRB$', '', entity)
+    entity = re.sub(r'\(.*\)', '', entity)
     entity = re.sub(r'_', ' ', entity)
     entity = re.sub(r'\s+', ' ', entity)
     return entity.strip()

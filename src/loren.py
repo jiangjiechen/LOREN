@@ -8,6 +8,7 @@
 '''
 
 import os
+import re
 import sys
 import json
 import logging
@@ -16,14 +17,14 @@ import cjjpy as cjj
 try:
     from .qg_client.question_generator import QuestionGenerator
     from .mrc_client.answer_generator import AnswerGenerator, chunks, assemble_answers_to_one
-    from .parsing_client.sentence_parser import SentenceParser, deal_bracket
+    from .parsing_client.sentence_parser import SentenceParser, deal_bracket, refine_entity
     from .check_client.fact_checker import FactChecker, id2label
     from .er_client import EvidenceRetrieval
 except:
     sys.path.append(cjj.AbsParentDir(__file__, '.'))
     from qg_client.question_generator import QuestionGenerator
     from mrc_client.answer_generator import AnswerGenerator, chunks, assemble_answers_to_one
-    from parsing_client.sentence_parser import SentenceParser, deal_bracket
+    from parsing_client.sentence_parser import SentenceParser, deal_bracket, refine_entity
     from check_client.fact_checker import FactChecker, id2label
     from er_client import EvidenceRetrieval
 
@@ -75,12 +76,12 @@ class Loren:
         :param evidence: 'aaa||bbb||ccc' / [entity, num, evidence, (prob)] if not None
         '''
         evidence_tuples = self._prep_evidence(claim, evidence)
-        evidence = [x[2] for x in evidence_tuples]
-        entity = [x[0] for x in evidence_tuples]
+        evidence_texts = [x[2] for x in evidence_tuples]
+        evidence_entities = [x[0] for x in evidence_tuples]
         self.logger.info('  * Evidence prepared. *')
         assert isinstance(evidence, list)
 
-        js = {'claim': claim, 'evidence': evidence, 'entities': entity}
+        js = {'claim': claim, 'evidence': evidence_texts, 'entities': evidence_entities}
         js = self._prep_claim_phrases(js)
         self.logger.info('  * Claim phrases prepared. *')
         js = self._prep_questions(js)
@@ -91,7 +92,7 @@ class Loren:
 
     def _prep_claim_phrases(self, js):
         results = self.sent_client.identify_NPs(deal_bracket(js['claim'], True),
-                                                candidate_NPs=[x[0] for x in js['evidence']])
+                                                candidate_NPs=[refine_entity(x) for x in js['entities']])
         NPs = results['NPs']
         claim_tokenized = results['text']
         verbs = results['verbs']
@@ -142,12 +143,14 @@ class Loren:
         '''
         if evidence in [None, '', 'null', 'NULL', 'Null']:
             evidence = self.er_client.retrieve(claim)
-            evidence = [(ev[0], ev[1], deal_bracket(ev[2], True, ev[0])) for ev in evidence]
+            evidence_tuple = [(ev[0], ev[1], deal_bracket(ev[2], True, ev[0])) for ev in evidence]
         else:
             if isinstance(evidence, str):
-                # TODO: magic sentence number (5)
-                evidence = [(None, None, ev.strip()) for i, ev in enumerate(evidence.split('||')[:5])]
-        return evidence
+                evidence = evidence.split('||')
+            # TODO: magic sentence number (5)
+            evidence_tuple = [('', '', ev.strip()) for ev in evidence[:5]]
+
+        return evidence_tuple
 
 
 if __name__ == '__main__':
