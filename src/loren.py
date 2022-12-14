@@ -79,7 +79,6 @@ class Loren:
         evidence_texts = [x[2] for x in evidence_tuples]
         evidence_entities = [x[0] for x in evidence_tuples]
         self.logger.info('  * Evidence prepared. *')
-        assert isinstance(evidence, list)
 
         js = {'claim': claim, 'evidence': evidence_texts, 'entities': evidence_entities}
         js = self._prep_claim_phrases(js)
